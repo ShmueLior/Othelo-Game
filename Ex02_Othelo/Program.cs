@@ -8,6 +8,7 @@ namespace Ex02_Othelo
     {
         public static void Main()
         {
+            Console.WriteLine("  ");
             GameMannger mannger = new GameMannger();
             mannger.RunGame();
         }
