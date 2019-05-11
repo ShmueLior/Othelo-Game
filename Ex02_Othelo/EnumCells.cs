@@ -4,14 +4,16 @@ using System.Text;
 
 namespace Ex02_Othelo
 {
-    class EnumCells
-    {
-        public enum eNumCells
+        public enum eNumSquare
         {
             WhiteCell = 'O',
             BlackCell = 'X',
             EmptyCell = ' ',
-        }
-
-    }
+        };
+    
+        public enum eNumGameType
+        {
+            PlayerVSCpu = 'C',
+            PlayerVSPlayer = 'P',
+        };
 }
