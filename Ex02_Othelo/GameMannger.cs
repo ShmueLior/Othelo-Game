@@ -95,6 +95,7 @@
             string selectedMove;
             while (game.IsStillPlayable())
             {
+                System.Threading.Thread.Sleep(1000);
                 Ex02.ConsoleUtils.Screen.Clear();
                 printGameBoard(game.GetGameBoard());
                 if (!game.IsPlayerHasMove()) // IsPlayerHasMove Should change the turn
@@ -108,18 +109,18 @@
                         selectedMove = chooseMove(game.GetPlayerName()); 
                         if (selectedMove != "Q")
                         {
-                            if (isValidString(selectedMove)) // v
+                            if (isValidString(selectedMove)) 
                             {
-                                if (game.IsPlayerMoveExceedBoard(selectedMove)) // v
+                                if (game.IsPlayerMoveExceedBoard(selectedMove))
                                 {
                                     Console.WriteLine("Your input move is exceed the board size!");
                                 }
                                 else
                                 {
-                                    Coords newCoord = new Coords(selectedMove[0] - 'A', selectedMove[1] - '1');
-                                    if (!game.IsLegalMoveTurn(newCoord)) //לממש
+                                    Coords newCoord = new Coords(selectedMove[1] - '1', selectedMove[0] - 'A');
+                                    if (!game.IsLegalMoveTurn(newCoord)) 
                                     {
-                                        Console.WriteLine("Your input move is not exceeded the board but illigal!");
+                                        Console.WriteLine("Your input move is illigal!");
                                     }
                                     else
                                     {

@@ -70,13 +70,32 @@ namespace Ex02_Othelo
 
         public void UpdatePossibleMovesForBothPlayers()
         {
-            return; // לממש
+            m_Players[0].m_PossibleMoves.Clear();
+            m_Players[1].m_PossibleMoves.Clear();
+            for (int i = 0; i < m_OtheloBoard.GetBoard().GetLength(0); i++)
+            {
+                for(int j = 0; j < m_OtheloBoard.GetBoard().GetLength(0); j++)
+                {
+                    Coords coord = new Coords(i, j);
+                    if (m_OtheloBoard.GetSquare(coord) == EnumSquare.EmptyCell)
+                    {
+                        if (m_OtheloBoard.IsLegalToFill(coord, EnumSquare.BlackCell))
+                        {
+                            m_Players[0].m_PossibleMoves.Add(coord);
+                        }
+                        if (m_OtheloBoard.IsLegalToFill(coord, EnumSquare.WhiteCell))
+                        {
+                            m_Players[1].m_PossibleMoves.Add(coord);
+                        }
+                    }
+                }
+            }
         }
 
         public bool IsPlayerMoveExceedBoard(string i_Str)
         {
-            int coordX = i_Str[0] - 'A';
-            int coordY = (i_Str[1] - '0');
+            int coordX = i_Str[1] - '1';
+            int coordY = i_Str[0] - 'A';
             return m_OtheloBoard.IsSquareExceedBoard(coordX, coordY);
         }
 
