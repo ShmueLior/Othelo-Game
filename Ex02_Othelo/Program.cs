@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ex02_Othelo
 {
-    class Program
+   public class Program
     {
         public static void Main()
         {

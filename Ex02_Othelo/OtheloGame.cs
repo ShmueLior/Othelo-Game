@@ -4,87 +4,122 @@ using System.Text;
 
 namespace Ex02_Othelo
 {
-    class OtheloGame
+   public class OtheloGame
     {
-        private OtheloBoard m_OtheloBoard;
-        private Player[] m_Players = new Player[2];
-        private int m_Turn;
-        private readonly eNumGameType k_Type;
+        private readonly EnumGameType k_Type;
+        private OtheloBoard           m_OtheloBoard;
+        private Player[]              m_Players; 
+        private int                   m_PlayerTurn;
         
-        public OtheloGame (string i_PlayerOneName, string i_PlayerTwoName, int i_SizeOfBoard, eNumGameType i_GameType)
+        public OtheloGame(string i_PlayerOneName, string i_PlayerTwoName, int i_SizeOfBoard, EnumGameType i_GameType)
         {
-            m_OtheloBoard = new OtheloBoard(i_SizeOfBoard);
-            m_Players[0] = new Player(i_PlayerOneName);
+            m_Players = new Player[2];
+            m_Players[0] = new Player(i_PlayerOneName, EnumSquare.BlackCell);
+            m_Players[1] = new Player(i_PlayerTwoName, EnumSquare.WhiteCell);
 
-            initilizePossibeMovesForPlayerOne();
-            m_Players[1] = new Player(i_PlayerTwoName);
-            initilizePossibeMovesForPlayerTwo();
-            m_Turn = 0;
+            m_OtheloBoard = new OtheloBoard(i_SizeOfBoard);
+
+            initilizePossibleMovesForBothPlayers();
+            
+            m_PlayerTurn = 0;
             k_Type = i_GameType;
         }
-        public eNumSquare [,] GetOtheloBoard()
+
+        public EnumSquare[,] GetGameBoard()
         {
             return m_OtheloBoard.GetBoard();
         }
+
         public string GetPlayerName()
         {
-            return m_Players[m_Turn].GetPlayerName();
+            return m_Players[m_PlayerTurn].GetPlayerName();
         }
 
-        public bool IsStillPlayable()//לממש
+        public bool IsStillPlayable()
         {
-            return true; // לממש
-        }
+            bool canFirstPlayerStillPlay = m_Players[0].m_PossibleMoves.Count > 0;
+            bool canSecondPlayerStillPlay = m_Players[1].m_PossibleMoves.Count > 0;
 
+            return canFirstPlayerStillPlay || canSecondPlayerStillPlay;
+        }
+        
         public void MakeMove(Coords i_Crd)
         {
-            
+            m_OtheloBoard.SetSquare(i_Crd, m_Players[m_PlayerTurn].GetSoldierType());
+            m_OtheloBoard.UpdateBoard(i_Crd, m_Players[m_PlayerTurn].GetSoldierType());
+            UpdatePossibleMovesForBothPlayers();
+            switchTurn();
         }
-
+        
         public void MakeCpuMove()
         {
-            return; // לממש
+            Random randomMove = new Random();
+            int index = randomMove.Next(m_Players[m_PlayerTurn].m_PossibleMoves.Count);
+            MakeMove(m_Players[m_PlayerTurn].m_PossibleMoves[index]);
         }
 
-        public bool IsLegalMoveTurn(Coords i_Crd) // logic
-        {
-            return true;
+        public bool IsLegalMoveTurn(Coords i_Crd)
+        { 
+            return m_Players[m_PlayerTurn].m_PossibleMoves.Contains(i_Crd);
         }
 
-        public int GetTurn ()
+        public int GetTurn()
         {
-            return m_Turn;
+            return m_PlayerTurn;
         }
 
         public void UpdatePossibleMovesForBothPlayers()
         {
             return; // לממש
         }
-        public bool IsMoveExceedBoard(string i_Str) // valid str
+
+        public bool IsPlayerMoveExceedBoard(string i_Str)
         {
-           return m_OtheloBoard.IsExceedBoard(i_Str);
-        }
-        private void initilizePossibeMovesForPlayerOne()
-        {
-            int position = (m_OtheloBoard.GetBoard().GetLength(0)) / 2;
-            m_Players[0].m_PossibleMoves.Add(new Coords(position, position - 2));
-            m_Players[0].m_PossibleMoves.Add(new Coords(position + 1, position - 1));
-            m_Players[0].m_PossibleMoves.Add(new Coords(position - 2, position));
-            m_Players[0].m_PossibleMoves.Add(new Coords(position - 1, position + 1));
+            int coordX = i_Str[0] - 'A';
+            int coordY = (i_Str[1] - '0');
+            return m_OtheloBoard.IsSquareExceedBoard(coordX, coordY);
         }
 
-        private void initilizePossibeMovesForPlayerTwo()
+        private void initilizePossibleMovesForBothPlayers()
         {
-            int position = m_OtheloBoard.GetBoard().GetLength(0) / 2;
-            m_Players[1].m_PossibleMoves.Add(new Coords(position - 1, position - 2));
-            m_Players[1].m_PossibleMoves.Add(new Coords(position - 2, position - 1));
-            m_Players[1].m_PossibleMoves.Add(new Coords(position + 1, position));
-            m_Players[1].m_PossibleMoves.Add(new Coords(position, position + 1));
+            initilizePossibleMovesForPlayerOne();
+            initilizePossibleMovesForPlayerTwo();
+        }
+
+        private void initilizePossibleMovesForPlayerTwo()
+        {
+            int middlePosition = m_OtheloBoard.GetBoard().GetLength(0) / 2;
+            m_Players[1].m_PossibleMoves.Add(new Coords(middlePosition, middlePosition - 2));
+            m_Players[1].m_PossibleMoves.Add(new Coords(middlePosition + 1, middlePosition - 1));
+            m_Players[1].m_PossibleMoves.Add(new Coords(middlePosition - 2, middlePosition));
+            m_Players[1].m_PossibleMoves.Add(new Coords(middlePosition - 1, middlePosition + 1));
+        }
+
+        private void initilizePossibleMovesForPlayerOne()
+        {
+            int middlePosition = m_OtheloBoard.GetBoard().GetLength(0) / 2;
+            m_Players[0].m_PossibleMoves.Add(new Coords(middlePosition - 1, middlePosition - 2));
+            m_Players[0].m_PossibleMoves.Add(new Coords(middlePosition - 2, middlePosition - 1));
+            m_Players[0].m_PossibleMoves.Add(new Coords(middlePosition + 1, middlePosition));
+            m_Players[0].m_PossibleMoves.Add(new Coords(middlePosition, middlePosition + 1));
         }
 
         public bool IsPlayerHasMove()
         {
-            return m_Players[m_Turn].m_PossibleMoves.Count > 0;
+            int numOfMovesOfCurrentPlayer = m_Players[m_PlayerTurn].m_PossibleMoves.Count;
+            return numOfMovesOfCurrentPlayer > 0;
+        }
+        private void switchTurn()
+        {
+            if (m_PlayerTurn == 1)
+            {
+                m_PlayerTurn = 0;
+            }
+
+            else
+            {
+                m_PlayerTurn = 1;
+            }
         }
     }
 }
