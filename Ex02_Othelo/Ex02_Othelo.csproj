@@ -38,7 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Coords.cs" />
-    <Compile Include="EnumCells.cs" />
+    <Compile Include="BoardGameEnums.cs" />
     <Compile Include="GameMannger.cs" />
     <Compile Include="OtheloBoard.cs" />
     <Compile Include="OtheloGame.cs" />

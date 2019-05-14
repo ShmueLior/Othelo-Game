@@ -21,15 +21,14 @@
             while (!isValidInput)
             {
                 Console.WriteLine("Press 1 for playing against the computer Or press 2 for playing against opponent:");
-                selcetedAnswer = int.Parse(Console.ReadLine());
-
-                if (selcetedAnswer == 1)
+                isValidInput = int.TryParse(Console.ReadLine(), out selcetedAnswer);
+                if (isValidInput && selcetedAnswer == 1)
                 {
                     gameType = EnumGameType.PlayerVSCpu;
                     secondPlayerName = "CPU";
                     isValidInput = true;
                 }
-                else if (selcetedAnswer == 2)
+                else if (isValidInput && selcetedAnswer == 2)
                 {
                     gameType = EnumGameType.PlayerVSPlayer;
                     Console.WriteLine("Please enter your oppenent name:");
@@ -39,6 +38,7 @@
                 else
                 {
                     Console.WriteLine("Wrong choice!");
+                    isValidInput = false;
                 }
             }
 
@@ -46,18 +46,20 @@
             Console.WriteLine("Please select the size of the board for the game:");
             while (!isValidInput)
             {
-                Console.WriteLine("Press 6 for 6X6 board size Or press 8 for 8X8 board size");
-                boardSize = int.Parse(Console.ReadLine());
-                if (boardSize == 6 || boardSize == 8)
+                Console.WriteLine("Press 6 for 6X6 board size Or press 8 for 8X8 board size:");
+                isValidInput = int.TryParse(Console.ReadLine(),out boardSize);
+                //Check Check off the invalid
+                if (isValidInput && (boardSize == 6 || boardSize == 8))
                 {
                     isValidInput = true;
                 }
                 else
-                {
+                { 
                     Console.WriteLine("Worng choice!");
+                    isValidInput = false;
                 }
             }
-
+    
             isValidInput = false;
 
             while (keepPlaying)
@@ -66,15 +68,15 @@
 
                 while (!isValidInput)
                 {
-                    Console.WriteLine("Would you like to play again?{0}Press 1 for YES Or 0 to quit:");
-                    selcetedAnswer = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Would you like to play again?{0}Press 1 for YES Or 0 to quit:", Environment.NewLine);
+                    isValidInput = int.TryParse(Console.ReadLine(), out selcetedAnswer);
 
-                    if (selcetedAnswer == 0)
+                    if (isValidInput && selcetedAnswer == 0)
                     {
                         keepPlaying = false;
                         isValidInput = true;
                     }
-                    else if (selcetedAnswer == 1)
+                    else if (isValidInput && selcetedAnswer == 1)
                     {
                         Console.WriteLine("Loading new game ...");
                         isValidInput = true;
@@ -82,25 +84,34 @@
                     else
                     {
                         Console.WriteLine("Worng choice!");
+                        isValidInput = false;
                     }
                 }
             }
             Console.WriteLine("Thank you and GoodBye!");
 
         }
+
         private void runGame(string i_FirstName, string i_SecondName, int i_BoardSize, EnumGameType i_GameType)
         {
+
             OtheloGame game = new OtheloGame(i_FirstName, i_SecondName, i_BoardSize, i_GameType);
+            Ex02.ConsoleUtils.Screen.Clear();
+            Console.WriteLine("The game is starting. {0}{1} your soldier are: {2}{3} {4} your soldier are: {5}", Environment.NewLine, i_FirstName,
+                               (char)EnumSquare.BlackCell, Environment.NewLine, i_SecondName, (char)EnumSquare.WhiteCell);
 
             string selectedMove;
             while (game.IsStillPlayable())
             {
+
                 System.Threading.Thread.Sleep(1000);
                 Ex02.ConsoleUtils.Screen.Clear();
                 printGameBoard(game.GetGameBoard());
-                if (!game.IsPlayerHasMove()) // IsPlayerHasMove Should change the turn
+                if (!game.IsPlayerHasMove())
                 {
-                    Console.WriteLine("There are no possible legal moves, Next player turn!");
+                    game.switchTurn();
+                    Console.WriteLine("There are no possible legal moves, The turn pass to : {0}!",game.GetPlayerName());
+                    System.Threading.Thread.Sleep(1000);
                 }
                 else
                 {

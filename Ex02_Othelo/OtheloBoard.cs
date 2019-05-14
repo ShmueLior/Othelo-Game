@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Ex02_Othelo
 { 
+
+
+
     class OtheloBoard
     {
         private EnumSquare[,] m_Board;

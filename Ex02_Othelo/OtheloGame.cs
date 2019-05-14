@@ -128,7 +128,7 @@ namespace Ex02_Othelo
             int numOfMovesOfCurrentPlayer = m_Players[m_PlayerTurn].m_PossibleMoves.Count;
             return numOfMovesOfCurrentPlayer > 0;
         }
-        private void switchTurn()
+        public void switchTurn()
         {
             if (m_PlayerTurn == 1)
             {
