@@ -4,16 +4,13 @@ using System.Text;
 
 namespace Ex02_Othelo
 { 
-
-
-
-    class OtheloBoard
+    public class OtheloBoard
     {
         private EnumSquare[,] m_Board;
     
-        public OtheloBoard (int i_Size)
+        public OtheloBoard(int i_Size)
         {
-          m_Board = new EnumSquare[i_Size,i_Size];
+          m_Board = new EnumSquare[i_Size, i_Size];
           initilizeBoard();
         }
 
@@ -22,26 +19,26 @@ namespace Ex02_Othelo
             return m_Board;
         }
 
-        public EnumSquare GetSquare (Coords i_Crd)
+        public EnumSquare GetSquare(Coords i_Crd)
         {
-            return m_Board[i_Crd.x, i_Crd.y];
+            return m_Board[i_Crd.X, i_Crd.Y];
         }
 
         public void SetSquare(Coords i_Crd, EnumSquare i_Sqr)
         {
-            m_Board[i_Crd.x, i_Crd.y] = i_Sqr;
+            m_Board[i_Crd.X, i_Crd.Y] = i_Sqr;
         }
 
         public bool IsSquareFilled(Coords i_Crd)
         {
-            return m_Board[i_Crd.x, i_Crd.y] != EnumSquare.EmptyCell;
+            return m_Board[i_Crd.X, i_Crd.Y] != EnumSquare.EmptyCell;
         }
 
         public bool IsSquareExceedBoard(int i_CoordX, int i_CoordY) 
         {
             bool isCoordXexceedBoard = i_CoordX < 0 || i_CoordX >= m_Board.GetLength(0);
             bool isCoordYexceedBoard = i_CoordY < 0 || i_CoordY >= m_Board.GetLength(0);
-            return (isCoordXexceedBoard || isCoordYexceedBoard);
+            return isCoordXexceedBoard || isCoordYexceedBoard;
         }
 
         public bool IsLegalToFill(Coords i_Coord, EnumSquare i_SoldierType) // logic
@@ -50,28 +47,28 @@ namespace Ex02_Othelo
             bool neededToUpdateSquare = false;
             bool paintTheSquare = false;
             bool isFirstOcurrance = true;
-            updateOrCheckDirctionPathDueToMove(i_Coord.x - 1, i_Coord.y, -1, 0, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // בדיקת עמודה למעלה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X - 1, i_Coord.Y, -1, 0, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // בדיקת עמודה למעלה
             dirctionPath[0] = neededToUpdateSquare;
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x - 1, i_Coord.y + 1, -1, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למעלה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X - 1, i_Coord.Y + 1, -1, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למעלה
             dirctionPath[1] = neededToUpdateSquare;
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x, i_Coord.y + 1, 0, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה ימינה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X, i_Coord.Y + 1, 0, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה ימינה
             dirctionPath[2] = neededToUpdateSquare;
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x + 1, i_Coord.y + 1, 1, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למטה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X + 1, i_Coord.Y + 1, 1, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למטה
             dirctionPath[3] = neededToUpdateSquare;
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x + 1, i_Coord.y, 1, 0, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // עמודה למטה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X + 1, i_Coord.Y, 1, 0, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // עמודה למטה
             dirctionPath[4] = neededToUpdateSquare;
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x + 1, i_Coord.y - 1, 1, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למטה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X + 1, i_Coord.Y - 1, 1, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למטה
             dirctionPath[5] = neededToUpdateSquare;
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x, i_Coord.y - 1, 0, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה שמאלה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X, i_Coord.Y - 1, 0, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה שמאלה
             dirctionPath[6] = neededToUpdateSquare;
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x - 1, i_Coord.y - 1, -1, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למעלה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X - 1, i_Coord.Y - 1, -1, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למעלה
             dirctionPath[7] = neededToUpdateSquare;
 
             bool isLegalSquare = false;
@@ -83,8 +80,10 @@ namespace Ex02_Othelo
                     break;
                 }
             }
+
             return isLegalSquare;
         }
+
         private void initilizeBoard()
         {
             int middlePosition = m_Board.GetLength(0) / 2;
@@ -102,38 +101,37 @@ namespace Ex02_Othelo
             m_Board[middlePosition - 1, middlePosition] = EnumSquare.BlackCell;
             m_Board[middlePosition, middlePosition - 1] = EnumSquare.BlackCell;
         }
-
-        
+  
         public void UpdateBoard(Coords i_Coord, EnumSquare i_SoldierType) 
         {
             bool neededToUpdateSquare = false;
             bool paintTheSquare = true;
             bool isFirstOcurrance = true;
-            updateOrCheckDirctionPathDueToMove(i_Coord.x - 1, i_Coord.y, -1, 0, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // בדיקת עמודה למעלה
-            
-            updateOrCheckDirctionPathDueToMove(i_Coord.x - 1, i_Coord.y + 1, -1, 1, i_SoldierType,ref  neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למעלה
-            
-            updateOrCheckDirctionPathDueToMove(i_Coord.x , i_Coord.y + 1, 0, 1, i_SoldierType,ref  neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה ימינה
-            
-            updateOrCheckDirctionPathDueToMove(i_Coord.x + 1, i_Coord.y + 1, 1, 1, i_SoldierType,ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למטה
-            
-            updateOrCheckDirctionPathDueToMove(i_Coord.x + 1, i_Coord.y, 1, 0, i_SoldierType,ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // עמודה למטה
-            
-            updateOrCheckDirctionPathDueToMove(i_Coord.x + 1, i_Coord.y - 1, 1, -1, i_SoldierType,ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למטה
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x , i_Coord.y - 1, 0, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה שמאלה
+            updateOrCheckDirctionPathDueToMove(i_Coord.X - 1, i_Coord.Y, -1, 0, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // בדיקת עמודה למעלה
+            
+            updateOrCheckDirctionPathDueToMove(i_Coord.X - 1, i_Coord.Y + 1, -1, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למעלה
+            
+            updateOrCheckDirctionPathDueToMove(i_Coord.X , i_Coord.Y + 1, 0, 1, i_SoldierType, ref  neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה ימינה
+            
+            updateOrCheckDirctionPathDueToMove(i_Coord.X + 1, i_Coord.Y + 1, 1, 1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון ימין למטה
+            
+            updateOrCheckDirctionPathDueToMove(i_Coord.X + 1, i_Coord.Y, 1, 0, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // עמודה למטה
+            
+            updateOrCheckDirctionPathDueToMove(i_Coord.X + 1, i_Coord.Y - 1, 1, -1, i_SoldierType,ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למטה
 
-            updateOrCheckDirctionPathDueToMove(i_Coord.x - 1, i_Coord.y - 1, -1, -1, i_SoldierType,ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למעלה
-           
+            updateOrCheckDirctionPathDueToMove(i_Coord.X , i_Coord.Y - 1, 0, -1, i_SoldierType, ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // שורה שמאלה
+
+            updateOrCheckDirctionPathDueToMove(i_Coord.X - 1, i_Coord.Y - 1, -1, -1, i_SoldierType,ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למעלה     
         }
 
-        private void updateOrCheckDirctionPathDueToMove(int i_CordX, int i_CordY, int i_DirctionX, int i_DirctionY, EnumSquare i_SoldierType , ref bool  neededToUpdateSquare, bool paintTheSquare, bool isFirstOcurrance)
+        private void updateOrCheckDirctionPathDueToMove(int i_CordX, int i_CordY, int i_DirctionX, int i_DirctionY, EnumSquare i_SoldierType , ref bool neededToUpdateSquare, bool paintTheSquare, bool isFirstOcurrance)
         {
             if(IsSquareExceedBoard(i_CordX, i_CordY) || m_Board[i_CordX, i_CordY] == EnumSquare.EmptyCell)
             {
                 neededToUpdateSquare = false;
             }
-            else if(m_Board[i_CordX,i_CordY] == i_SoldierType)
+            else if(m_Board[i_CordX, i_CordY] == i_SoldierType)
             {
                 if (!isFirstOcurrance)
                 {
@@ -153,7 +151,6 @@ namespace Ex02_Othelo
                     m_Board[i_CordX, i_CordY] = i_SoldierType;
                 }
             }
-        }
-        
+        } 
     }
 }

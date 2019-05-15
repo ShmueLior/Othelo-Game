@@ -6,13 +6,13 @@ namespace Ex02_Othelo
 {
    public class Player
     {
+        private readonly EnumSquare m_SoldierType;
         private string m_Name;
         private int m_Score;
-        private readonly EnumSquare m_SoldierType;
 
         public List<Coords> m_PossibleMoves;
 
-        public Player(string i_Name, EnumSquare i_SquareType,int i_Score)
+        public Player(string i_Name, EnumSquare i_SquareType, int i_Score)
         {
             m_Name = i_Name;
             m_PossibleMoves = new List<Coords>();
