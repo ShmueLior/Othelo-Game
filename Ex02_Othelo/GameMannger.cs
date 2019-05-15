@@ -106,7 +106,7 @@
 
                 System.Threading.Thread.Sleep(1000);
                 Ex02.ConsoleUtils.Screen.Clear();
-                printGameBoard(game.GetGameBoard());
+                printGameBoard(ref game);
                 if (!game.IsPlayerHasMove())
                 {
                     game.switchTurn();
@@ -171,9 +171,9 @@
             return Console.ReadLine();
         }
 
-        private void printGameBoard(EnumSquare[,] i_GameBoard)
+        private void printGameBoard(ref OtheloGame game) //EnumSquare[,] i_GameBoard)
         {
-            int size = i_GameBoard.GetLength(0);
+            int size = game.GetGameBoard().GetLength(0);
             char c = 'A';
             string line = new String('=', 4 * size + 1);
             ////first line
@@ -191,7 +191,15 @@
                 Console.Write("{0} |", i);
                 for (int j = 1; j <= size; j++)
                 {
-                    Console.Write(" {0} |", (char)(i_GameBoard[i - 1, j - 1]));
+                    Console.Write(" {0} |", (char)(game.GetGameBoard()[i - 1, j - 1]));
+                }
+                if (i == size/2)
+                {
+                    Console.Write("   {0} {1}", game.getPlayers()[0].GetPlayerName(), game.getPlayers()[0].GetScore());              
+                }
+                else if (i == size/2 + 1)
+                {
+                    Console.Write("   {0} {1}", game.getPlayers()[1].GetPlayerName(), game.getPlayers()[1].GetScore());                     
                 }
                 Console.WriteLine("");
                 Console.Write(" ");

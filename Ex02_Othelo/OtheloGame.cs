@@ -14,8 +14,8 @@ namespace Ex02_Othelo
         public OtheloGame(string i_PlayerOneName, string i_PlayerTwoName, int i_SizeOfBoard, EnumGameType i_GameType)
         {
             m_Players = new Player[2];
-            m_Players[0] = new Player(i_PlayerOneName, EnumSquare.BlackCell);
-            m_Players[1] = new Player(i_PlayerTwoName, EnumSquare.WhiteCell);
+            m_Players[0] = new Player(i_PlayerOneName, EnumSquare.BlackCell, 0);
+            m_Players[1] = new Player(i_PlayerTwoName, EnumSquare.WhiteCell, 0);
 
             m_OtheloBoard = new OtheloBoard(i_SizeOfBoard);
 
@@ -48,14 +48,37 @@ namespace Ex02_Othelo
             m_OtheloBoard.SetSquare(i_Crd, m_Players[m_PlayerTurn].GetSoldierType());
             m_OtheloBoard.UpdateBoard(i_Crd, m_Players[m_PlayerTurn].GetSoldierType());
             UpdatePossibleMovesForBothPlayers();
+            updateScoreForBothPlayer();
             switchTurn();
         }
-        
+
+        private void updateScoreForBothPlayer()
+        {
+            int scoreForPlayerOne = 0, scoreForPlayerTwo = 0;
+
+            for (int i = 0; i < m_OtheloBoard.GetBoard().GetLength(0); i++)
+            {
+                for (int j = 0; j < m_OtheloBoard.GetBoard().GetLength(0); j++)
+                {
+                    if (m_OtheloBoard.GetBoard()[i, j] == EnumSquare.BlackCell)
+                    {
+                        scoreForPlayerOne++;
+                    }
+                    else if (m_OtheloBoard.GetBoard()[i, j] == EnumSquare.WhiteCell)
+                    {
+                        scoreForPlayerTwo++;
+                    }
+                }
+            }
+            m_Players[0].SetScore(scoreForPlayerOne);
+            m_Players[1].SetScore(scoreForPlayerTwo); 
+        }
         public void MakeCpuMove()
         {
             Random randomMove = new Random();
             int index = randomMove.Next(m_Players[m_PlayerTurn].m_PossibleMoves.Count);
             MakeMove(m_Players[m_PlayerTurn].m_PossibleMoves[index]);
+            updateScoreForBothPlayer(); // אולי לעשות את מייקמוב תחת אותה מטודה
         }
 
         public bool IsLegalMoveTurn(Coords i_Crd)
@@ -139,6 +162,11 @@ namespace Ex02_Othelo
             {
                 m_PlayerTurn = 1;
             }
+        }
+
+        public Player[] getPlayers()
+        {
+            return m_Players;
         }
     }
 }
