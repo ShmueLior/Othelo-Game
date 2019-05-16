@@ -4,14 +4,14 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public enum EnumSquare
+    public enum eNumSquare
     {
         WhiteCell = 'O',
         BlackCell = 'X',
         EmptyCell = ' ',
     }
 
-    public enum EnumGameType
+    public enum eNumGameType
     {
         PlayerVSCpu = 'C',
         PlayerVSPlayer = 'P',

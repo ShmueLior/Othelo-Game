@@ -6,38 +6,38 @@ namespace Ex02_Othelo
 {
    public class Player
     {
-        private readonly EnumSquare m_SoldierType;
-        private string m_Name;
+        private readonly eNumSquare r_SoldierType;
+        private readonly string r_Name;
         private int m_Score;
+        private List<Coords> m_PossibleMoves;
 
-        public List<Coords> m_PossibleMoves;
-
-        public Player(string i_Name, EnumSquare i_SquareType, int i_Score)
+        public Player(string i_Name, eNumSquare i_SquareType, int i_Score) 
         {
-            m_Name = i_Name;
+            r_Name = i_Name;
             m_PossibleMoves = new List<Coords>();
-            m_SoldierType = i_SquareType;
+            r_SoldierType = i_SquareType;
             m_Score = 2;
         }
 
-        public string GetPlayerName()
+        public List<Coords> PossibleMoves
         {
-            return m_Name;
+            get { return m_PossibleMoves; }
         }
 
-        public EnumSquare GetSoldierType()
+        public string Name
         {
-            return m_SoldierType;
+            get { return r_Name; }
         }
 
-        public void SetScore(int i_Score)
+        public eNumSquare SoldierType
         {
-            m_Score = i_Score;
+            get { return r_SoldierType; }
         }
 
-        public int GetScore()
+        public int Score
         {
-           return m_Score;
+            get { return m_Score; }
+            set { m_Score = value; }
         }
     }
 }

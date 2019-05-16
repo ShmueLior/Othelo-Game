@@ -6,16 +6,16 @@ namespace Ex02_Othelo
 {
    public class OtheloGame
     {
-        private readonly EnumGameType k_Type;
+        private readonly eNumGameType k_Type;
         private OtheloBoard m_OtheloBoard;
         private Player[] m_Players; 
         private int m_PlayerTurn;
         
-        public OtheloGame(string i_PlayerOneName, string i_PlayerTwoName, int i_SizeOfBoard, EnumGameType i_GameType)
+        public OtheloGame(string i_PlayerOneName, string i_PlayerTwoName, int i_SizeOfBoard, eNumGameType i_GameType)
         {
             m_Players = new Player[2];
-            m_Players[0] = new Player(i_PlayerOneName, EnumSquare.BlackCell, 0);
-            m_Players[1] = new Player(i_PlayerTwoName, EnumSquare.WhiteCell, 0);
+            m_Players[0] = new Player(i_PlayerOneName, eNumSquare.BlackCell, 0);
+            m_Players[1] = new Player(i_PlayerTwoName, eNumSquare.WhiteCell, 0);
 
             m_OtheloBoard = new OtheloBoard(i_SizeOfBoard);
 
@@ -25,90 +25,62 @@ namespace Ex02_Othelo
             k_Type = i_GameType;
         }
 
-        public EnumSquare[,] GetGameBoard()
+        public eNumSquare[,] OtheloBoard
         {
-            return m_OtheloBoard.GetBoard();
+            get {return m_OtheloBoard.Board;}
         }
 
-        public string GetPlayerName()
+        public string PlayerNameTurn
         {
-            return m_Players[m_PlayerTurn].GetPlayerName();
+            get {return m_Players[m_PlayerTurn].Name;}
         }
 
         public bool IsStillPlayable()
         {
-            bool canFirstPlayerStillPlay = m_Players[0].m_PossibleMoves.Count > 0;
-            bool canSecondPlayerStillPlay = m_Players[1].m_PossibleMoves.Count > 0;
+            bool canFirstPlayerStillPlay = m_Players[0].PossibleMoves.Count > 0;
+            bool canSecondPlayerStillPlay = m_Players[1].PossibleMoves.Count > 0;
 
             return canFirstPlayerStillPlay || canSecondPlayerStillPlay;
         }
         
         public void MakeMove(Coords i_Coord)
         {
-            EnumSquare playerSoldier = m_Players[m_PlayerTurn].GetSoldierType();
+            eNumSquare playerSoldier = m_Players[m_PlayerTurn].SoldierType;
 
             m_OtheloBoard.SetSquare(i_Coord, playerSoldier);
             m_OtheloBoard.UpdateBoard(i_Coord, playerSoldier);
-            switchTurn();
+            SwitchTurn();
             UpdatePossibleMovesForBothPlayers();
             updateScoreForBothPlayer();
-        }
-
-        private void updateScoreForBothPlayer()
-        {
-            EnumSquare[,] Board = m_OtheloBoard.GetBoard();
-       
-            int scoreForPlayerOne = 0, scoreForPlayerTwo = 0;
-            int sizeOfRowInBoard = Board.GetLength(0);
-            int sizeOfColInBoard = sizeOfRowInBoard;
-
-            for (int i = 0; i < sizeOfColInBoard; i++)
-            {
-                for (int j = 0; j < sizeOfRowInBoard; j++)
-                {
-                    if (Board[i, j] == EnumSquare.BlackCell)
-                    {
-                        scoreForPlayerOne++;
-                    }
-                    else if (Board[i, j] == EnumSquare.WhiteCell)
-                    {
-                        scoreForPlayerTwo++;
-                    }
-                }
-            }
-
-            m_Players[0].SetScore(scoreForPlayerOne);
-            m_Players[1].SetScore(scoreForPlayerTwo); 
         }
 
         public void MakeCpuMove()
         {
             Random randomMove = new Random();
-            int numOfPossibleMoves = m_Players[m_PlayerTurn].m_PossibleMoves.Count;
+            int numOfPossibleMoves = m_Players[m_PlayerTurn].PossibleMoves.Count;
             int index = randomMove.Next(numOfPossibleMoves);
         
-            MakeMove(m_Players[m_PlayerTurn].m_PossibleMoves[index]);
-            updateScoreForBothPlayer(); // אולי לעשות את מייקמוב תחת אותה מטודה
+            MakeMove(m_Players[m_PlayerTurn].PossibleMoves[index]);
         }
 
         public bool IsLegalMoveTurn(Coords i_Crd)
         { 
-            return m_Players[m_PlayerTurn].m_PossibleMoves.Contains(i_Crd);
+            return m_Players[m_PlayerTurn].PossibleMoves.Contains(i_Crd);
         }
 
-        public int GetTurn()
+        public int Turn
         {
-            return m_PlayerTurn;
+            get { return m_PlayerTurn; }
         }
 
         public void UpdatePossibleMovesForBothPlayers()
         {
             Player playerOne = m_Players[0];
             Player playerTwo = m_Players[1];
-            m_Players[0].m_PossibleMoves.Clear();
-            m_Players[1].m_PossibleMoves.Clear();
+            m_Players[0].PossibleMoves.Clear();
+            m_Players[1].PossibleMoves.Clear();
 
-            EnumSquare[,] Board = m_OtheloBoard.GetBoard();
+            eNumSquare[,] Board = m_OtheloBoard.Board;
 
             int sizeOfRowInBoard = Board.GetLength(0);
             int sizeOfColInBoard = sizeOfRowInBoard;
@@ -118,16 +90,16 @@ namespace Ex02_Othelo
                 for(int j = 0; j < sizeOfRowInBoard; j++)
                 {
                     Coords currentCoord = new Coords(i, j);
-                    if (m_OtheloBoard.GetSquare(currentCoord) == EnumSquare.EmptyCell)
+                    if (m_OtheloBoard.GetSquare(currentCoord) == eNumSquare.EmptyCell)
                     {
-                        if (m_OtheloBoard.IsLegalToFill(currentCoord, EnumSquare.BlackCell))
+                        if (m_OtheloBoard.IsLegalToFill(currentCoord, eNumSquare.BlackCell))
                         {
-                            playerOne.m_PossibleMoves.Add(currentCoord);
+                            playerOne.PossibleMoves.Add(currentCoord);
                         }
 
-                        if (m_OtheloBoard.IsLegalToFill(currentCoord, EnumSquare.WhiteCell))
+                        if (m_OtheloBoard.IsLegalToFill(currentCoord, eNumSquare.WhiteCell))
                         {
-                            playerTwo.m_PossibleMoves.Add(currentCoord);
+                            playerTwo.PossibleMoves.Add(currentCoord);
                         }
                     }
                 }
@@ -141,43 +113,13 @@ namespace Ex02_Othelo
             return m_OtheloBoard.IsSquareExceedBoard(coordX, coordY);
         }
 
-        private void initilizePossibleMovesForBothPlayers()
-        {
-            initilizePossibleMovesForPlayerOne();
-            initilizePossibleMovesForPlayerTwo();
-        }
-
-        private void initilizePossibleMovesForPlayerTwo()
-        {
-            int sizeOfBoard = m_OtheloBoard.GetBoard().GetLength(0);
-            int middlePosition = sizeOfBoard / 2;
-            List<Coords> possibleMovesForPlayerTwo = m_Players[1].m_PossibleMoves;
-
-            possibleMovesForPlayerTwo.Add(new Coords(middlePosition, middlePosition - 2));
-            possibleMovesForPlayerTwo.Add(new Coords(middlePosition + 1, middlePosition - 1));
-            possibleMovesForPlayerTwo.Add(new Coords(middlePosition - 2, middlePosition));
-            possibleMovesForPlayerTwo.Add(new Coords(middlePosition - 1, middlePosition + 1));
-        }
-
-        private void initilizePossibleMovesForPlayerOne()
-        {
-            int sizeOfBoard = m_OtheloBoard.GetBoard().GetLength(0);
-            int middlePosition = sizeOfBoard / 2;
-
-            List<Coords> possibleMovesForPlayerOne = m_Players[0].m_PossibleMoves;
-            possibleMovesForPlayerOne.Add(new Coords(middlePosition - 1, middlePosition - 2));
-            possibleMovesForPlayerOne.Add(new Coords(middlePosition - 2, middlePosition - 1));
-            possibleMovesForPlayerOne.Add(new Coords(middlePosition + 1, middlePosition));
-            possibleMovesForPlayerOne.Add(new Coords(middlePosition, middlePosition + 1));
-        }
-
         public bool IsPlayerHasMove()
         {
-            int numOfMovesOfCurrentPlayer = m_Players[m_PlayerTurn].m_PossibleMoves.Count;
+            int numOfMovesOfCurrentPlayer = m_Players[m_PlayerTurn].PossibleMoves.Count;
             return numOfMovesOfCurrentPlayer > 0;
         }
 
-        public void switchTurn()
+        public void SwitchTurn()
         {
             if (m_PlayerTurn == 1)
             {
@@ -189,32 +131,89 @@ namespace Ex02_Othelo
             }
         }
 
-        public Player[] getPlayers()
+        public Player[] Players
         {
-            return m_Players;
+            get { return m_Players; }
         }
 
-        public string getWinnerName()
+        public string GetWinnerName()
         {
-            int firstPlayerScore = m_Players[0].GetScore();
-            int secondPlayerScore = m_Players[1].GetScore();
+            int firstPlayerScore = m_Players[0].Score;
+            int secondPlayerScore = m_Players[1].Score;
             string theWinner = null;
 
             if(firstPlayerScore > secondPlayerScore)
             {
-                theWinner = m_Players[0].GetPlayerName();
+                theWinner = m_Players[0].Name;
             }
             else if(secondPlayerScore > firstPlayerScore)
             {
-                theWinner = m_Players[1].GetPlayerName();
+                theWinner = m_Players[1].Name;
             }
 
             return theWinner;
         }
 
-        public EnumSquare getSquare(int i_X, int i_Y)
+        public eNumSquare GetSquareType(int i_X, int i_Y)
         {
             return m_OtheloBoard.GetSquare(new Coords(i_X, i_Y));
+        }
+
+        private void initilizePossibleMovesForBothPlayers()
+        {
+            initilizePossibleMovesForPlayerOne();
+            initilizePossibleMovesForPlayerTwo();
+        }
+
+        private void initilizePossibleMovesForPlayerOne()
+        {
+            int sizeOfBoard = m_OtheloBoard.Board.GetLength(0);
+            int middlePosition = sizeOfBoard / 2;
+
+            List<Coords> possibleMovesForPlayerOne = m_Players[0].PossibleMoves;
+            possibleMovesForPlayerOne.Add(new Coords(middlePosition - 1, middlePosition - 2));
+            possibleMovesForPlayerOne.Add(new Coords(middlePosition - 2, middlePosition - 1));
+            possibleMovesForPlayerOne.Add(new Coords(middlePosition + 1, middlePosition));
+            possibleMovesForPlayerOne.Add(new Coords(middlePosition, middlePosition + 1));
+        }
+
+        private void initilizePossibleMovesForPlayerTwo()
+        {
+            int sizeOfBoard = m_OtheloBoard.Board.GetLength(0);
+            int middlePosition = sizeOfBoard / 2;
+
+            List<Coords> possibleMovesForPlayerTwo = m_Players[1].PossibleMoves;
+            possibleMovesForPlayerTwo.Add(new Coords(middlePosition, middlePosition - 2));
+            possibleMovesForPlayerTwo.Add(new Coords(middlePosition + 1, middlePosition - 1));
+            possibleMovesForPlayerTwo.Add(new Coords(middlePosition - 2, middlePosition));
+            possibleMovesForPlayerTwo.Add(new Coords(middlePosition - 1, middlePosition + 1));
+        }
+
+        private void updateScoreForBothPlayer()
+        {
+            eNumSquare[,] Board = m_OtheloBoard.Board;
+       
+            int scoreForPlayerOne = 0, scoreForPlayerTwo = 0;
+            int sizeOfRowInBoard = Board.GetLength(0);
+            int sizeOfColInBoard = sizeOfRowInBoard;
+
+            for (int i = 0; i < sizeOfColInBoard; i++)
+            {
+                for (int j = 0; j < sizeOfRowInBoard; j++)
+                {
+                    if (Board[i, j] == eNumSquare.BlackCell)
+                    {
+                        scoreForPlayerOne++;
+                    }
+                    else if (Board[i, j] == eNumSquare.WhiteCell)
+                    {
+                        scoreForPlayerTwo++;
+                    }
+                }
+            }
+
+            m_Players[0].Score = scoreForPlayerOne;
+            m_Players[1].Score = scoreForPlayerTwo; 
         }
     }
 }

@@ -6,32 +6,32 @@ namespace Ex02_Othelo
 { 
     public class OtheloBoard
     {
-        private EnumSquare[,] m_Board;
+        private eNumSquare[,] m_Board;
     
         public OtheloBoard(int i_Size)
         {
-          m_Board = new EnumSquare[i_Size, i_Size];
+          m_Board = new eNumSquare[i_Size, i_Size];
           initilizeBoard();
         }
 
-        public EnumSquare[,] GetBoard()
+        public eNumSquare[,] Board
         {
-            return m_Board;
+            get { return m_Board; }
         }
 
-        public EnumSquare GetSquare(Coords i_Crd)
+        public eNumSquare GetSquare(Coords i_Crd)
         {
             return m_Board[i_Crd.X, i_Crd.Y];
         }
 
-        public void SetSquare(Coords i_Crd, EnumSquare i_Sqr)
+        public void SetSquare(Coords i_Coord, eNumSquare i_Square)
         {
-            m_Board[i_Crd.X, i_Crd.Y] = i_Sqr;
+            m_Board[i_Coord.X, i_Coord.Y] = i_Square;
         }
 
-        public bool IsSquareFilled(Coords i_Crd)
+        public bool IsSquareFilled(Coords i_Coord)
         {
-            return m_Board[i_Crd.X, i_Crd.Y] != EnumSquare.EmptyCell;
+            return m_Board[i_Coord.X, i_Coord.Y] != eNumSquare.EmptyCell;
         }
 
         public bool IsSquareExceedBoard(int i_CoordX, int i_CoordY) 
@@ -41,7 +41,7 @@ namespace Ex02_Othelo
             return isCoordXexceedBoard || isCoordYexceedBoard;
         }
 
-        public bool IsLegalToFill(Coords i_Coord, EnumSquare i_SoldierType) // logic
+        public bool IsLegalToFill(Coords i_Coord, eNumSquare i_SoldierType) // logic
         {
             bool[] dirctionPath = new bool[8]; 
             bool neededToUpdateSquare = false;
@@ -83,26 +83,8 @@ namespace Ex02_Othelo
 
             return isLegalSquare;
         }
-
-        private void initilizeBoard()
-        {
-            int middlePosition = m_Board.GetLength(0) / 2;
-
-            for(int i = 0; i < m_Board.GetLength(0); i++)
-            {
-                for(int j = 0; j < m_Board.GetLength(0); j++)
-                {
-                    m_Board[i,j] = EnumSquare.EmptyCell;
-                }
-            }
-
-            m_Board[middlePosition, middlePosition] = EnumSquare.WhiteCell;
-            m_Board[middlePosition - 1, middlePosition - 1] = EnumSquare.WhiteCell;
-            m_Board[middlePosition - 1, middlePosition] = EnumSquare.BlackCell;
-            m_Board[middlePosition, middlePosition - 1] = EnumSquare.BlackCell;
-        }
   
-        public void UpdateBoard(Coords i_Coord, EnumSquare i_SoldierType) 
+        public void UpdateBoard(Coords i_Coord, eNumSquare i_SoldierType) 
         {
             bool neededToUpdateSquare = false;
             bool paintTheSquare = true;
@@ -125,28 +107,46 @@ namespace Ex02_Othelo
             updateOrCheckDirctionPathDueToMove(i_Coord.X - 1, i_Coord.Y - 1, -1, -1, i_SoldierType,ref neededToUpdateSquare, paintTheSquare, isFirstOcurrance); // אלכסון שמאלה למעלה     
         }
 
-        private void updateOrCheckDirctionPathDueToMove(int i_CordX, int i_CordY, int i_DirctionX, int i_DirctionY, EnumSquare i_SoldierType , ref bool neededToUpdateSquare, bool paintTheSquare, bool isFirstOcurrance)
+        private void initilizeBoard()
         {
-            if(IsSquareExceedBoard(i_CordX, i_CordY) || m_Board[i_CordX, i_CordY] == EnumSquare.EmptyCell)
+            int middlePosition = m_Board.GetLength(0) / 2;
+
+            for(int i = 0; i < m_Board.GetLength(0); i++)
             {
-                neededToUpdateSquare = false;
+                for(int j = 0; j < m_Board.GetLength(0); j++)
+                {
+                    m_Board[i,j] = eNumSquare.EmptyCell;
+                }
+            }
+
+            m_Board[middlePosition, middlePosition] = eNumSquare.WhiteCell;
+            m_Board[middlePosition - 1, middlePosition - 1] = eNumSquare.WhiteCell;
+            m_Board[middlePosition - 1, middlePosition] = eNumSquare.BlackCell;
+            m_Board[middlePosition, middlePosition - 1] = eNumSquare.BlackCell;
+        }
+
+        private void updateOrCheckDirctionPathDueToMove(int i_CordX, int i_CordY, int i_DirctionX, int i_DirctionY, eNumSquare i_SoldierType , ref bool io_NeededToUpdateSquare, bool paintTheSquare, bool isFirstOcurrance)
+        {
+            if(IsSquareExceedBoard(i_CordX, i_CordY) || m_Board[i_CordX, i_CordY] == eNumSquare.EmptyCell)
+            {
+                io_NeededToUpdateSquare = false;
             }
             else if(m_Board[i_CordX, i_CordY] == i_SoldierType)
             {
                 if (!isFirstOcurrance)
                 {
-                    neededToUpdateSquare = true;
+                    io_NeededToUpdateSquare = true;
                 }
                 else
                 {
-                    neededToUpdateSquare = false;
+                    io_NeededToUpdateSquare = false;
                 }
             }
             else
             {
                 isFirstOcurrance = false;
-                updateOrCheckDirctionPathDueToMove(i_CordX + i_DirctionX, i_CordY + i_DirctionY, i_DirctionX, i_DirctionY, i_SoldierType, ref neededToUpdateSquare , paintTheSquare, isFirstOcurrance);
-                if(neededToUpdateSquare && paintTheSquare)
+                updateOrCheckDirctionPathDueToMove(i_CordX + i_DirctionX, i_CordY + i_DirctionY, i_DirctionX, i_DirctionY, i_SoldierType, ref io_NeededToUpdateSquare, paintTheSquare, isFirstOcurrance);
+                if(io_NeededToUpdateSquare && paintTheSquare)
                 {
                     m_Board[i_CordX, i_CordY] = i_SoldierType;
                 }

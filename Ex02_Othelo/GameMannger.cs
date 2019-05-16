@@ -4,13 +4,14 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class GameMannger
+    internal class GameMannger
     {
         public void StartUI()
         {
+            // לשפר
             string firstPlayerName, secondPlayerName = null;
             int boardSize = 0, selcetedAnswer;
-            EnumGameType gameType = EnumGameType.PlayerVSCpu;
+            eNumGameType gameType = eNumGameType.PlayerVSCpu;
             bool isValidInput = false;
             bool keepPlaying = true;
 
@@ -24,13 +25,13 @@
                 isValidInput = int.TryParse(Console.ReadLine(), out selcetedAnswer);
                 if (isValidInput && selcetedAnswer == 1)
                 {
-                    gameType = EnumGameType.PlayerVSCpu;
+                    gameType = eNumGameType.PlayerVSCpu;
                     secondPlayerName = "CPU";
                     isValidInput = true;
                 }
                 else if (isValidInput && selcetedAnswer == 2)
                 {
-                    gameType = EnumGameType.PlayerVSPlayer;
+                    gameType = eNumGameType.PlayerVSPlayer;
                     Console.WriteLine("Please enter your oppenent name:");
                     secondPlayerName = Console.ReadLine();
                     isValidInput = true;
@@ -87,32 +88,34 @@
                         isValidInput = false;
                     }
                 }
+
+                isValidInput = false;
             }
 
             Console.WriteLine("Thank you and GoodBye!");
         }
 
-        private void runGame(string i_FirstName, string i_SecondName, int i_BoardSize, EnumGameType i_GameType)
+        private void runGame(string io_FirstName, string io_SecondName, int io_BoardSize, eNumGameType io_GameType)
         {
-            OtheloGame game = new OtheloGame(i_FirstName, i_SecondName, i_BoardSize, i_GameType);
-            printIntroduction(i_FirstName, i_SecondName);
+            OtheloGame game = new OtheloGame(io_FirstName, io_SecondName, io_BoardSize, io_GameType);
+            printIntroduction(io_FirstName, io_SecondName);
             string selectedMove = null;
             while (game.IsStillPlayable())
             {
                 System.Threading.Thread.Sleep(1000);
                 Ex02.ConsoleUtils.Screen.Clear();
-                printGameBoard(ref game);
+                printGameBoard(game);
                 if (!game.IsPlayerHasMove())
                 {
-                    game.switchTurn();
-                    Console.WriteLine("There are no possible legal moves, The turn pass to : {0}!", game.GetPlayerName());
+                    game.SwitchTurn();
+                    Console.WriteLine("There are no possible legal moves, The turn pass to : {0}!", game.PlayerNameTurn);
                     System.Threading.Thread.Sleep(1000);
                 }
                 else
                 {
-                    if (i_GameType == EnumGameType.PlayerVSPlayer || game.GetTurn() == 0)
+                    if (io_GameType == eNumGameType.PlayerVSPlayer || game.Turn == 0)
                     {
-                        selectedMove = chooseMove(game.GetPlayerName()); 
+                        selectedMove = chooseMove(game.PlayerNameTurn); 
                         if (selectedMove != "Q")
                         {
                             if (isValidString(selectedMove)) 
@@ -155,8 +158,8 @@
             if (selectedMove != null)
             {
                 Ex02.ConsoleUtils.Screen.Clear();
-                printGameBoard(ref game);
-                printTheScoreAndTheWinner(ref game);
+                printGameBoard(game);
+                printTheScoreAndTheWinner(game);
             }
         }
 
@@ -171,15 +174,15 @@
             return Console.ReadLine();
         }
 
-        private void printGameBoard(ref OtheloGame game)
+        private void printGameBoard(OtheloGame i_game) 
         {
-            int size = game.GetGameBoard().GetLength(0);
+            int size = i_game.OtheloBoard.GetLength(0);
             char c = 'A';
             string line = new String('=', (4 * size) + 1);
-            string firstPlayerName = game.getPlayers()[0].GetPlayerName();
-            string secondPlayerName = game.getPlayers()[1].GetPlayerName();
-            int firstPlayerScore = game.getPlayers()[0].GetScore();
-            int secondPlayerScore = game.getPlayers()[1].GetScore();
+            string firstPlayerName = i_game.Players[0].Name;
+            string secondPlayerName = i_game.Players[1].Name;
+            int firstPlayerScore = i_game.Players[0].Score;
+            int secondPlayerScore = i_game.Players[1].Score;
 
             ////first line
             Console.Write(" ");
@@ -197,12 +200,12 @@
                 Console.Write("{0} |", i);
                 for (int j = 1; j <= size; j++)
                 {
-                    Console.Write(" {0} |", (char)game.getSquare(i - 1, j - 1));
+                    Console.Write(" {0} |", (char)i_game.GetSquareType(i - 1, j - 1));
                 }
 
                 if (i == size / 2)
                 {   
-                    if (game.GetTurn() == 0)
+                    if (i_game.Turn == 0)
                     {
                         Console.Write("-->");
                     }
@@ -215,7 +218,7 @@
                 }
                 else if (i == (size / 2) + 1)
                 {
-                    if (game.GetTurn() == 1)
+                    if (i_game.Turn == 1)
                     {
                         Console.Write("-->");
                     }
@@ -237,18 +240,18 @@
         {
             Ex02.ConsoleUtils.Screen.Clear();
             Console.WriteLine("The game is about to start!");
-            Console.WriteLine("{0} your soldiers are: {1}", i_FirstName, (char)EnumSquare.BlackCell);
-            Console.WriteLine("{0} your soldiers are: {1}", i_SecondName, (char)EnumSquare.WhiteCell);
+            Console.WriteLine("{0} your soldiers are: {1}", i_FirstName, (char)eNumSquare.BlackCell);
+            Console.WriteLine("{0} your soldiers are: {1}", i_SecondName, (char)eNumSquare.WhiteCell);
             Console.WriteLine("Press Enter to start the game..");
             Console.ReadLine();
         }
 
-        private void printTheScoreAndTheWinner(ref OtheloGame game)
+        private void printTheScoreAndTheWinner(OtheloGame i_game)
         {
             Console.WriteLine("The game is over! The scores are:");
-            Console.WriteLine("{0} your score is: {1}", game.getPlayers()[0].GetPlayerName(), game.getPlayers()[0].GetScore());
-            Console.WriteLine("{0} your score is: {1}", game.getPlayers()[1].GetPlayerName(), game.getPlayers()[1].GetScore());
-            string theWinner = game.getWinnerName();
+            Console.WriteLine("{0} your score is: {1}", i_game.Players[0].Name, i_game.Players[0].Score);
+            Console.WriteLine("{0} your score is: {1}", i_game.Players[1].Name, i_game.Players[1].Score);
+            string theWinner = i_game.GetWinnerName();
 
             if(theWinner == null)
             {
