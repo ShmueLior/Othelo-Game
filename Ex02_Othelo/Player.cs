@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Ex02_Othelo
+namespace Ex02_OtheloLogic
 {
    public class Player
     {

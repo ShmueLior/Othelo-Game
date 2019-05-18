@@ -1,9 +1,5 @@
-﻿namespace Ex02_Othelo
+﻿namespace Ex02_OtheloLogic
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     public struct Coords
     {
         public int X;

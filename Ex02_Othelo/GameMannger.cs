@@ -1,17 +1,15 @@
 ﻿namespace Ex02_Othelo
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
+    using Ex02_OtheloLogic;
 
     internal class GameMannger
     {
         public void StartUI()
         {
-            // לשפר
-            string firstPlayerName, secondPlayerName = null;
-            int boardSize = 0, selcetedAnswer;
-            eNumGameType gameType = eNumGameType.PlayerVSCpu;
+            string firstPlayerName = string.Empty, secondPlayerName = string.Empty;
+            int boardSize = 0, selcetedAnswer = 0;
+            eNumGameType gameType = 0;
             bool isValidInput = false;
             bool keepPlaying = true;
 
@@ -49,8 +47,7 @@
             {
                 Console.WriteLine("Press 6 for 6X6 board size Or press 8 for 8X8 board size:");
                 isValidInput = int.TryParse(Console.ReadLine(), out boardSize);
-                ////Check Check off the invalid
-                if (isValidInput && (boardSize == 6 || boardSize == 8 || boardSize == 4))
+                if (isValidInput && (boardSize == 6 || boardSize == 8 ))
                 {
                     isValidInput = true;
                 }
@@ -69,7 +66,7 @@
 
                 while (!isValidInput)
                 {
-                    Console.WriteLine("Would you like to play again?{0}Press 1 for YES Or 0 to quit:", Environment.NewLine);
+                    Console.WriteLine("Would you like to play again?{0}Press 1 for YES Or 0 to Quit:", Environment.NewLine);
                     isValidInput = int.TryParse(Console.ReadLine(), out selcetedAnswer);
 
                     if (isValidInput && selcetedAnswer == 0)
@@ -95,25 +92,24 @@
             Console.WriteLine("Thank you and GoodBye!");
         }
 
-        private void runGame(string io_FirstName, string io_SecondName, int io_BoardSize, eNumGameType io_GameType)
+        private void runGame(string i_FirstName, string i_SecondName, int i_BoardSize, eNumGameType i_GameType)
         {
-            OtheloGame game = new OtheloGame(io_FirstName, io_SecondName, io_BoardSize, io_GameType);
-            printIntroduction(io_FirstName, io_SecondName);
+            OtheloGame game = new OtheloGame(i_FirstName, i_SecondName, i_BoardSize, i_GameType);
+            printIntroduction(i_FirstName, i_SecondName);
             string selectedMove = null;
             while (game.IsStillPlayable())
             {
-                System.Threading.Thread.Sleep(1000);
                 Ex02.ConsoleUtils.Screen.Clear();
                 printGameBoard(game);
                 if (!game.IsPlayerHasMove())
                 {
                     game.SwitchTurn();
                     Console.WriteLine("There are no possible legal moves, The turn pass to : {0}!", game.PlayerNameTurn);
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(4500);
                 }
                 else
                 {
-                    if (io_GameType == eNumGameType.PlayerVSPlayer || game.Turn == 0)
+                    if (i_GameType == eNumGameType.PlayerVSPlayer || game.Turn == 0)
                     {
                         selectedMove = chooseMove(game.PlayerNameTurn); 
                         if (selectedMove != "Q")
@@ -123,6 +119,7 @@
                                 if (game.IsPlayerMoveExceedBoard(selectedMove))
                                 {
                                     Console.WriteLine("Your input move is exceed the board size!");
+                                    System.Threading.Thread.Sleep(4000);
                                 }
                                 else
                                 {
@@ -130,6 +127,7 @@
                                     if (!game.IsLegalMoveTurn(newCoord)) 
                                     {
                                         Console.WriteLine("Your input move is illigal! {0}You must choose a move which blocks an opponent's  sequence", Environment.NewLine);
+                                        System.Threading.Thread.Sleep(5000);
                                     }
                                     else
                                     {
@@ -140,6 +138,7 @@
                             else
                             {
                                 Console.WriteLine("InValid input!");
+                                System.Threading.Thread.Sleep(2000);
                             }
                         }
                         else
@@ -150,6 +149,7 @@
                     else
                     {
                         Console.WriteLine("Comupter playing..");
+                        System.Threading.Thread.Sleep(1500);
                         game.MakeCpuMove();
                     }
                 }
@@ -174,38 +174,34 @@
             return Console.ReadLine();
         }
 
-        private void printGameBoard(OtheloGame i_game) 
+        private void printGameBoard(OtheloGame i_Game) 
         {
-            int size = i_game.OtheloBoard.GetLength(0);
+            int size = i_Game.OtheloBoard.GetLength(0);
             char c = 'A';
-            string line = new String('=', (4 * size) + 1);
-            string firstPlayerName = i_game.Players[0].Name;
-            string secondPlayerName = i_game.Players[1].Name;
-            int firstPlayerScore = i_game.Players[0].Score;
-            int secondPlayerScore = i_game.Players[1].Score;
+            string line = new string('=', (4 * size) + 1);
+            string firstPlayerName = i_Game.Players[0].Name;
+            string secondPlayerName = i_Game.Players[1].Name;
+            int firstPlayerScore = i_Game.Players[0].Score;
+            int secondPlayerScore = i_Game.Players[1].Score;
 
-            ////first line
             Console.Write(" ");
             for (int j = 0; j < size; j++)
             {
                 Console.Write("   {0}", char.ConvertFromUtf32(c + j));
             }
 
-            Console.WriteLine(string.Empty);
-            Console.Write(" ");
-            Console.WriteLine(line);
-            ////other lines
+            Console.WriteLine("{0} {1}", Environment.NewLine, line);     
             for (int i = 1; i <= size; i++)
             {
                 Console.Write("{0} |", i);
                 for (int j = 1; j <= size; j++)
                 {
-                    Console.Write(" {0} |", (char)i_game.GetSquareType(i - 1, j - 1));
+                    Console.Write(" {0} |", (char)i_Game.GetSquareType(i - 1, j - 1));
                 }
 
                 if (i == size / 2)
                 {   
-                    if (i_game.Turn == 0)
+                    if (i_Game.Turn == 0)
                     {
                         Console.Write("-->");
                     }
@@ -218,7 +214,7 @@
                 }
                 else if (i == (size / 2) + 1)
                 {
-                    if (i_game.Turn == 1)
+                    if (i_Game.Turn == 1)
                     {
                         Console.Write("-->");
                     }
@@ -230,9 +226,7 @@
                     Console.Write("{0} Score: {1} Soldier O", secondPlayerName, secondPlayerScore);                     
                 }
 
-                Console.WriteLine(string.Empty);
-                Console.Write(" ");
-                Console.WriteLine(line);
+                Console.WriteLine("{0} {1}", Environment.NewLine, line);
             }
         }
 
@@ -246,12 +240,12 @@
             Console.ReadLine();
         }
 
-        private void printTheScoreAndTheWinner(OtheloGame i_game)
+        private void printTheScoreAndTheWinner(OtheloGame i_Game)
         {
             Console.WriteLine("The game is over! The scores are:");
-            Console.WriteLine("{0} your score is: {1}", i_game.Players[0].Name, i_game.Players[0].Score);
-            Console.WriteLine("{0} your score is: {1}", i_game.Players[1].Name, i_game.Players[1].Score);
-            string theWinner = i_game.GetWinnerName();
+            Console.WriteLine("{0} your score is: {1}", i_Game.Players[0].Name, i_Game.Players[0].Score);
+            Console.WriteLine("{0} your score is: {1}", i_Game.Players[1].Name, i_Game.Players[1].Score);
+            string theWinner = i_Game.GetWinnerName();
 
             if(theWinner == null)
             {

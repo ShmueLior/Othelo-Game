@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Ex02_Othelo
+namespace Ex02_OtheloLogic
 {
    public class OtheloGame
     {
@@ -27,12 +26,12 @@ namespace Ex02_Othelo
 
         public eNumSquare[,] OtheloBoard
         {
-            get {return m_OtheloBoard.Board;}
+            get { return m_OtheloBoard.Board; }
         }
 
         public string PlayerNameTurn
         {
-            get {return m_Players[m_PlayerTurn].Name;}
+            get { return m_Players[m_PlayerTurn].Name; }
         }
 
         public bool IsStillPlayable()
@@ -77,8 +76,8 @@ namespace Ex02_Othelo
         {
             Player playerOne = m_Players[0];
             Player playerTwo = m_Players[1];
-            m_Players[0].PossibleMoves.Clear();
-            m_Players[1].PossibleMoves.Clear();
+            playerOne.PossibleMoves.Clear();
+            playerTwo.PossibleMoves.Clear();
 
             eNumSquare[,] Board = m_OtheloBoard.Board;
 
